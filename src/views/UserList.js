@@ -1,15 +1,25 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Alert, FlatList, View} from 'react-native';
 import {Avatar, Button, Icon, ListItem} from 'react-native-elements';
-import Users from '../data/Users';
+import UsersContext from '../context/UsersContext';
+import {showMessage} from 'react-native-flash-message';
 
 export default props => {
+  const {state, dispatch} = useContext(UsersContext);
+
   function confirmUserDeletion(user) {
     Alert.alert('Excluir Usuário', 'Deseja excluir o usuário?', [
       {
         text: 'Sim',
         onPress() {
-          console.warn(user.name + ' foi excluido.');
+          dispatch({
+            type: 'deleteUser',
+            payload: user,
+          });
+          showMessage({
+            message: `${user.name} foi excluido.`,
+            type: 'success',
+          });
         },
       },
       {
@@ -22,14 +32,14 @@ export default props => {
     return (
       <>
         <Button
-          onPress={() => props.navigation.navigate('UserForm', user)}
           type="clear"
           icon={<Icon name="edit" size={25} color="blue" />}
+          onPress={() => props.navigation.navigate('UserForm', user)}
         />
         <Button
-          onPress={() => confirmUserDeletion(user)}
           type="clear"
           icon={<Icon name="delete" size={25} color="red" />}
+          onPress={() => confirmUserDeletion(user)}
         />
       </>
     );
@@ -37,10 +47,7 @@ export default props => {
 
   function getUserItem({item: user}) {
     return (
-      <ListItem
-        key={user.id}
-        bottomDivider
-        onPress={() => props.navigation.navigate('UserForm')}>
+      <ListItem key={user.id} bottomDivider>
         <Avatar rounded title={user.name[0]} source={{uri: user.avatarUrl}} />
         <ListItem.Content>
           <ListItem.Title>{user.name}</ListItem.Title>
@@ -54,7 +61,7 @@ export default props => {
   return (
     <View>
       <FlatList
-        data={Users}
+        data={state.Users}
         keyExtractor={user => user.id.toString()}
         renderItem={getUserItem}
       />
