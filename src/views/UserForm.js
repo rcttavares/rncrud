@@ -34,6 +34,7 @@ export default ({route, navigation}) => {
 
       <Button
         title="Salvar"
+        disabled={!user.name || !user.email || !user.avatarUrl}
         onPress={() => {
           dispatch({
             type: user.id ? 'updateUser' : 'createUser',
