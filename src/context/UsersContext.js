@@ -1,7 +1,7 @@
-import React, {createContext, useReducer} from 'react';
+import React, { createContext, useReducer } from 'react';
 import Users from '../data/Users';
 
-const initialState = {Users};
+const initialState = { Users };
 const UsersContext = createContext({});
 
 const actions = {
@@ -18,7 +18,7 @@ const actions = {
     const updated = action.payload;
     return {
       ...state,
-      Users: state.Users.map(u => (u.id === updated.id ? updated : u)),
+      Users: state.Users.map((u) => (u.id === updated.id ? updated : u)),
     };
   },
 
@@ -26,12 +26,12 @@ const actions = {
     const deleted = action.payload;
     return {
       ...state,
-      Users: state.Users.filter(u => u.id !== deleted.id),
+      Users: state.Users.filter((u) => u.id !== deleted.id),
     };
   },
 };
 
-export const UsersProvider = props => {
+export const UsersProvider = (props) => {
   function reducer(state, action) {
     const fn = actions[action.type];
     return fn ? fn(state, action) : state;
@@ -40,7 +40,7 @@ export const UsersProvider = props => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
-    <UsersContext.Provider value={{state, dispatch}}>
+    <UsersContext.Provider value={{ state, dispatch }}>
       {props.children}
     </UsersContext.Provider>
   );
